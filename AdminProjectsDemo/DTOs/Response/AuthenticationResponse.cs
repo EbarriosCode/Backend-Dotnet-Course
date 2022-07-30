@@ -1,4 +1,4 @@
-﻿namespace AdminProjectsDemo.DTOs
+﻿namespace AdminProjectsDemo.DTOs.Response
 {
     public class AuthenticationResponse
     {

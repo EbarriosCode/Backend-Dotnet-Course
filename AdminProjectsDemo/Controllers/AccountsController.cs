@@ -1,7 +1,9 @@
-﻿using AdminProjectsDemo.DTOs;
+﻿using AdminProjectsDemo.DTOs.Request;
+using AdminProjectsDemo.DTOs.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -17,8 +19,9 @@ namespace AdminProjectsDemo.Controllers
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IConfiguration _configuration;
-        public AccountsController(UserManager<IdentityUser> userManager, 
-                                  SignInManager<IdentityUser> signInManager, 
+
+        public AccountsController(UserManager<IdentityUser> userManager,
+                                  SignInManager<IdentityUser> signInManager,
                                   RoleManager<IdentityRole> roleManager,
                                   IConfiguration configuration)
         {
@@ -28,77 +31,141 @@ namespace AdminProjectsDemo.Controllers
             this._configuration = configuration;
         }
 
-        [HttpPost("Create")]
-        public async Task<ActionResult<AuthenticationResponse>> CreateAccount([FromBody] UserCredentials userCredentials)
+        [HttpGet]
+        public async Task<ActionResult<IdentityUser[]>> Get()
         {
-            if(!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var user = new IdentityUser()
+            try
             {
-                UserName = userCredentials.Email,
-                Email = userCredentials.Email
-            };
+                var allUsersIdentity = await this._userManager.Users.ToArrayAsync();
 
-            var creationUserResult = await this._userManager.CreateAsync(user, userCredentials.Password);
-
-            if (creationUserResult.Succeeded)
+                return Ok(allUsersIdentity);
+            }
+            catch (Exception exception)
             {
-                await this._userManager.AddToRoleAsync(user, "Invitado");
+                return BadRequest(exception.Message);
+            }
+        }
 
-                var tokenResponse = this.BuildToken(userCredentials);
-                return tokenResponse;
-            }               
+        [HttpGet("{userId}")]
+        public async Task<ActionResult<IdentityUser>> Get([FromRoute] string userId)
+        {
+            try
+            {
+                var userIdentityById = await this._userManager.FindByIdAsync(userId);
 
-            return BadRequest(creationUserResult.Errors);
+                if (userIdentityById == null)
+                    return NotFound("User not found");
+
+                return Ok(userIdentityById);
+            }
+            catch (Exception exception)
+            {
+                return BadRequest(exception.Message);
+            }
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<AuthenticationResponse>> Create([FromBody] UserCredentials userCredentials)
+        {
+            try
+            {
+                if(!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
+                var user = new IdentityUser()
+                {
+                    UserName = userCredentials.Email,
+                    Email = userCredentials.Email
+                };
+
+                var creationUserResult = await this._userManager.CreateAsync(user, userCredentials.Password);
+
+                if (creationUserResult.Succeeded)
+                {
+                    await this._userManager.AddToRoleAsync(user, "Invitado");
+
+                    var tokenResponse = this.BuildToken(userCredentials);
+
+                    return Ok(tokenResponse);
+                }               
+
+                return BadRequest(creationUserResult.Errors);
+            }
+            catch (Exception exception)
+            {
+                return BadRequest(exception.Message);
+            }
+        }
+
+        [HttpPut]
+        public async Task<ActionResult> Update([FromBody] AccountUpdateRequest accountUpdateRequest)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
+                var findUserById = await this._userManager.FindByIdAsync(accountUpdateRequest.Id);
+
+                if (findUserById == null)
+                    return NotFound("User not found");
+
+                findUserById.UserName = accountUpdateRequest.UserName;
+                findUserById.Email = accountUpdateRequest.Email;
+
+                var userUpdated = await this._userManager.UpdateAsync(findUserById);
+
+                return NoContent();
+            }
+            catch (Exception exception)
+            {
+                return BadRequest(exception.Message);
+            }
+        }
+
+        [HttpDelete("{userId}")]
+        public async Task<ActionResult> Delete([FromRoute] string userId)
+        {
+            try
+            {
+                var findUserById = await this._userManager.FindByIdAsync(userId);
+
+                if (findUserById == null)
+                    return NotFound("User not found");
+
+                var userDeleted = await this._userManager.DeleteAsync(findUserById);
+                
+                return NoContent();
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
         }
 
         [HttpPost("Login")]
         public async Task<ActionResult<AuthenticationResponse>> Login([FromBody] UserCredentials userCredentials)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var loginResult = await this._signInManager.PasswordSignInAsync(userCredentials.Email, 
-                                                                       userCredentials.Password, 
-                                                                       isPersistent: false, 
-                                                                       lockoutOnFailure: false);
-
-            if (loginResult.Succeeded)
-                return BuildToken(userCredentials);
-
-            return BadRequest("Invalid Login");
-        }
-
-        [HttpGet("Roles")]
-        public ActionResult<IdentityRole[]> GetRoles()
-        {
-            var roles = this._roleManager.Roles.ToArray();
-            return Ok(roles);
-        }
-
-        [HttpPost("AssignRole")]
-        public async Task<ActionResult> AssignRoleToUser([FromBody] string userId)
-        {
             try
             {
-                if (string.IsNullOrEmpty(userId))
-                    return BadRequest();
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
 
-                var userIdentity = await this._userManager.FindByIdAsync(userId);
-                var addRoleToUser = await this._userManager.AddToRoleAsync(userIdentity, "Ejecuto");
+                var loginResult = await this._signInManager.PasswordSignInAsync(userCredentials.Email,
+                                                                                userCredentials.Password,
+                                                                                isPersistent: false,
+                                                                                lockoutOnFailure: false);
 
-                //if (addRoleToUser.Succeeded)
-                return Ok(userIdentity);                
+                if (loginResult.Succeeded)
+                    return BuildToken(userCredentials);
+
+                return BadRequest("Invalid Login");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                //var error = addRoleToUser.Errors.First();
-                //return BadRequest($"Code: {error.Code} - Description: {error.Description}");
-
-                return BadRequest(ex.Message);
-            }            
-        }
+                return BadRequest("Invalid Login");
+            }
+        }        
 
         private AuthenticationResponse BuildToken(UserCredentials userCredentials)
         {
