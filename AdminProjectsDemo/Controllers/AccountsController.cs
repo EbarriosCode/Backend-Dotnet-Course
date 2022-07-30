@@ -12,12 +12,11 @@ using System.Text;
 namespace AdminProjectsDemo.Controllers
 {
     [ApiController]
-    [Route("api/Accounts")]
+    [Route("api/[controller]")]
     public class AccountsController : ControllerBase
     {
         private readonly UserManager<IdentityUser> _userManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly SignInManager<IdentityUser> _signInManager;        
         private readonly IConfiguration _configuration;
 
         public AccountsController(UserManager<IdentityUser> userManager,
@@ -27,7 +26,6 @@ namespace AdminProjectsDemo.Controllers
         {
             this._userManager = userManager;
             this._signInManager = signInManager;
-            this._roleManager = roleManager;
             this._configuration = configuration;
         }
 
@@ -86,7 +84,7 @@ namespace AdminProjectsDemo.Controllers
 
                     var tokenResponse = this.BuildToken(userCredentials);
 
-                    return Ok(tokenResponse);
+                    return Created($"https://localhost:7209/api/Accounts/{user.Id}", tokenResponse);
                 }               
 
                 return BadRequest(creationUserResult.Errors);
