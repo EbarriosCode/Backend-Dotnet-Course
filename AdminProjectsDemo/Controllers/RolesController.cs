@@ -11,11 +11,13 @@ namespace AdminProjectsDemo.Controllers
     {        
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly IConfiguration _configuration;
 
-        public RolesController(RoleManager<IdentityRole> roleManager, UserManager<IdentityUser> userManager)
+        public RolesController(RoleManager<IdentityRole> roleManager, UserManager<IdentityUser> userManager, IConfiguration configuration)
         {
             this._roleManager = roleManager;
             this._userManager = userManager;
+            this._configuration = configuration;
         }
 
         [HttpGet]
@@ -69,7 +71,7 @@ namespace AdminProjectsDemo.Controllers
                 var creationRolResult = await this._roleManager.CreateAsync(rol);
 
                 if (creationRolResult.Succeeded)
-                    return Created($"https://localhost:7209/api/Roles/{rol.Id}", rol);
+                    return Created($"{this._configuration["HostURL"]}Roles/{rol.Id}", rol);
 
                 return BadRequest(creationRolResult.Errors);
             }
@@ -85,7 +87,7 @@ namespace AdminProjectsDemo.Controllers
             try
             {
                 var findRolById = await this._roleManager.FindByIdAsync(rolId);
-
+                
                 if (findRolById == null)
                     return NotFound("Role not found");
 

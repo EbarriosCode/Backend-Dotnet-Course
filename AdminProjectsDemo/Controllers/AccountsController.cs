@@ -84,7 +84,7 @@ namespace AdminProjectsDemo.Controllers
 
                     var tokenResponse = this.BuildToken(userCredentials);
 
-                    return Created($"https://localhost:7209/api/Accounts/{user.Id}", tokenResponse);
+                    return Created($"{this._configuration["HostURL"]}/Accounts/{user.Id}", tokenResponse);
                 }               
 
                 return BadRequest(creationUserResult.Errors);
@@ -135,9 +135,9 @@ namespace AdminProjectsDemo.Controllers
                 
                 return NoContent();
             }
-            catch (Exception)
+            catch (Exception exception)
             {
-                return BadRequest();
+                return BadRequest(exception.Message);
             }
         }
 
