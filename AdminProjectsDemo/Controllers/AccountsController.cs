@@ -45,7 +45,7 @@ namespace AdminProjectsDemo.Controllers
         }
 
         [HttpGet("{userId}")]
-        public async Task<ActionResult<IdentityUser>> Get([FromRoute] string userId)
+        public async Task<ActionResult<IdentityUser>> GetById([FromRoute] string userId)
         {
             try
             {

@@ -1,4 +1,5 @@
 ﻿using AdminProjectsDemo.DataContext;
+using AdminProjectsDemo.Middleware;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -81,6 +82,9 @@ namespace AdminProjectsDemo
             services.AddIdentity<IdentityUser, IdentityRole>()
                     .AddEntityFrameworkStores<ApplicationDbContext>()
                     .AddDefaultTokenProviders();
+
+            // Own services configuration
+            IoC.AddDependency(services);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
