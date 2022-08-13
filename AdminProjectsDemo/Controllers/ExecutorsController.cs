@@ -62,9 +62,9 @@ namespace AdminProjectsDemo.Controllers
                 if(!ModelState.IsValid)
                     return BadRequest(ModelState);
 
-                var activityCreated = await this._executorHandler.CreateAsync(executor);
+                var rowsAffected = await this._executorHandler.CreateAsync(executor);
 
-                return activityCreated > 0 
+                return rowsAffected > 0 
                                               ? Created($"{this._configuration["HostURL"]}/Executor/{executor.ExecutorId}", new { ExecutorId = executor.ExecutorId }) 
                                               : BadRequest("Error when creating the executor");
             }

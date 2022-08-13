@@ -1,5 +1,6 @@
 ﻿using AdminProjectsDemo.Services.Activities;
 using AdminProjectsDemo.Services.Executors;
+using AdminProjectsDemo.Services.ProjectExecutor;
 using AdminProjectsDemo.Services.Projects;
 
 namespace AdminProjectsDemo.Middleware
@@ -11,6 +12,7 @@ namespace AdminProjectsDemo.Middleware
             services.AddTransient<IProjectHandler, ProjectHandler>();
             services.AddTransient<IActivityHandler, ActivityHandler>();
             services.AddTransient<IExecutorHandler, ExecutorHandler>();
+            services.AddTransient<IProjectExecutorHandler, ProjectExecutorHandler>();
 
             return services;
         }
