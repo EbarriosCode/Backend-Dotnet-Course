@@ -12,7 +12,7 @@ namespace AdminProjectsDemo.Services.Projects
 
         public async Task<Project[]> GetAsync()
         {                     
-            var projectsDb = this._context.Projects.ToArray();
+            var projectsDb = this._context.Projects.Include(x => x.Activities).ToArray();
 
             return await Task.FromResult(projectsDb);
         }

@@ -3,15 +3,21 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AdminProjectsDemo.Entitites
 {
-    [Table("Projects")]
-    public class Project
+    [Table("Activities")]
+    public class Activity
     {
         [Key]
+        public int ActivityId { get; set; }
+
+        [Required]
         public int ProjectId { get; set; }
 
         [Required]
         [StringLength(50)]
         public string Name { get; set; }
+        
+        [StringLength(250)]
+        public string Description { get; set; }
 
         [Required]
         public DateTime StartDate { get; set; }
@@ -21,11 +27,10 @@ namespace AdminProjectsDemo.Entitites
 
         [Required]
         [Column(TypeName = "decimal(65,2)")]
-        public decimal Budget { get; set; }
+        public decimal Cost { get; set; }
 
-        [StringLength(150)]
-        public string Scope { get; set; }
-
-        public ICollection<Activity> Activities { get; set; }
+        [Required]
+        [StringLength(100)]
+        public string ResponsibleName { get; set; }
     }
 }

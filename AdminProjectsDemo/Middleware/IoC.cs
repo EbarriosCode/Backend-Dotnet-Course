@@ -1,4 +1,5 @@
-﻿using AdminProjectsDemo.Services.Projects;
+﻿using AdminProjectsDemo.Services.Activities;
+using AdminProjectsDemo.Services.Projects;
 
 namespace AdminProjectsDemo.Middleware
 {
@@ -6,8 +7,8 @@ namespace AdminProjectsDemo.Middleware
     {
         public static IServiceCollection AddDependency(this IServiceCollection services)
         {
-            
             services.AddTransient<IProjectHandler, ProjectHandler>();
+            services.AddTransient<IActivityHandler, ActivityHandler>();
 
             return services;
         }

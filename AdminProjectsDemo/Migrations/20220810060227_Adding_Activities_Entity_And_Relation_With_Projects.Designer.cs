@@ -3,6 +3,7 @@ using System;
 using AdminProjectsDemo.DataContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AdminProjectsDemo.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220810060227_Adding_Activities_Entity_And_Relation_With_Projects")]
+    partial class Adding_Activities_Entity_And_Relation_With_Projects
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -26,7 +28,7 @@ namespace AdminProjectsDemo.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("Cost")
-                        .HasColumnType("decimal(65,2)");
+                        .HasColumnType("decimal(65,30)");
 
                     b.Property<string>("Description")
                         .HasMaxLength(250)
@@ -65,7 +67,7 @@ namespace AdminProjectsDemo.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("Budget")
-                        .HasColumnType("decimal(65,2)");
+                        .HasColumnType("decimal(65,30)");
 
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime(6)");

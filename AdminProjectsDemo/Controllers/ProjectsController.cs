@@ -19,7 +19,7 @@ namespace AdminProjectsDemo.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> Get()
+        public async Task<ActionResult<Project[]>> Get()
         {
             try
             {
@@ -34,7 +34,7 @@ namespace AdminProjectsDemo.Controllers
         }
 
         [HttpGet("{projectId:int}")]
-        public async Task<ActionResult> GetById(int projectId)
+        public async Task<ActionResult<Project>> GetById(int projectId)
         {
             try
             {
@@ -55,17 +55,17 @@ namespace AdminProjectsDemo.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create([FromBody] Project project)
+        public async Task<ActionResult<int>> Create([FromBody] Project project)
         {
             try
             {
                 if(!ModelState.IsValid)
                     return BadRequest(ModelState);
 
-                var projectIdCreated = await this._projectHandler.CreateAsync(project);
+                var projectCreated = await this._projectHandler.CreateAsync(project);
 
-                return projectIdCreated > 0 
-                                              ? Created($"{this._configuration["HostURL"]}/Projects/{projectIdCreated}", new { ProjectId = projectIdCreated }) 
+                return projectCreated > 0 
+                                              ? Created($"{this._configuration["HostURL"]}/Projects/{project.ProjectId}", new { ProjectId = project.ProjectId }) 
                                               : BadRequest("Error when creating the project");
             }
             catch (Exception exception)
@@ -75,7 +75,7 @@ namespace AdminProjectsDemo.Controllers
         }
 
         [HttpPut("{projectId:int}")]
-        public async Task<ActionResult> Update([FromRoute] int projectId, [FromBody] Project project)
+        public async Task<IActionResult> Update([FromRoute] int projectId, [FromBody] Project project)
         {
             try
             {
@@ -96,7 +96,7 @@ namespace AdminProjectsDemo.Controllers
         }
 
         [HttpDelete("{projectId:int}")]
-        public async Task<ActionResult> Delete([FromRoute] int projectId)
+        public async Task<IActionResult> Delete([FromRoute] int projectId)
         {
             try
             {
