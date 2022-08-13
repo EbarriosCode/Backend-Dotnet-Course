@@ -11,5 +11,6 @@ namespace AdminProjectsDemo.DataContext
 
         public DbSet<Project> Projects { get; set; }
         public DbSet<Activity> Activities { get; set; }
+        public DbSet<Executor> Executors { get; set; }
     }
 }

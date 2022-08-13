@@ -34,7 +34,7 @@ namespace AdminProjectsDemo.Controllers
         }
 
         [HttpGet("{activityId:int}")]
-        public async Task<ActionResult<Activity>> GetById(int activityId)
+        public async Task< ActionResult<Activity>> GetById(int activityId)
         {
             try
             {
