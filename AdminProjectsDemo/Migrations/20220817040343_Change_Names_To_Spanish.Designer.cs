@@ -3,6 +3,7 @@ using System;
 using AdminProjectsDemo.DataContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AdminProjectsDemo.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220817040343_Change_Names_To_Spanish")]
+    partial class Change_Names_To_Spanish
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -50,8 +52,7 @@ namespace AdminProjectsDemo.Migrations
                         .HasColumnType("varchar(100)");
 
                     b.Property<int>("ProyectoID")
-                        .HasColumnType("int")
-                        .HasColumnName("Proyecto_Id");
+                        .HasColumnType("int");
 
                     b.HasKey("ActividadID");
 
@@ -60,21 +61,35 @@ namespace AdminProjectsDemo.Migrations
                     b.ToTable("Actividades");
                 });
 
-            modelBuilder.Entity("AdminProjectsDemo.Entitites.Ejecutor", b =>
+            modelBuilder.Entity("AdminProjectsDemo.Entitites.Executor", b =>
                 {
-                    b.Property<int>("EjecutorID")
+                    b.Property<int>("ExecutorId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("Ejecutor_Id");
+                        .HasColumnType("int");
 
-                    b.Property<string>("Nombre")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(150)
                         .HasColumnType("varchar(150)");
 
-                    b.HasKey("EjecutorID");
+                    b.HasKey("ExecutorId");
 
-                    b.ToTable("Ejecutores");
+                    b.ToTable("Executors");
+                });
+
+            modelBuilder.Entity("AdminProjectsDemo.Entitites.ProjectExecutor", b =>
+                {
+                    b.Property<int>("ProjectId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ExecutorId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ProjectId", "ExecutorId");
+
+                    b.HasIndex("ExecutorId");
+
+                    b.ToTable("ProjectsExecutors");
                 });
 
             modelBuilder.Entity("AdminProjectsDemo.Entitites.Proyecto", b =>
@@ -105,23 +120,6 @@ namespace AdminProjectsDemo.Migrations
                     b.HasKey("ProyectoID");
 
                     b.ToTable("Proyectos");
-                });
-
-            modelBuilder.Entity("AdminProjectsDemo.Entitites.ProyectoEjecutor", b =>
-                {
-                    b.Property<int>("ProyectoID")
-                        .HasColumnType("int")
-                        .HasColumnName("Proyecto_Id");
-
-                    b.Property<int>("EjecutorID")
-                        .HasColumnType("int")
-                        .HasColumnName("Ejecutor_Id");
-
-                    b.HasKey("ProyectoID", "EjecutorID");
-
-                    b.HasIndex("EjecutorID");
-
-                    b.ToTable("ProyectosEjecutores");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -325,23 +323,23 @@ namespace AdminProjectsDemo.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("AdminProjectsDemo.Entitites.ProyectoEjecutor", b =>
+            modelBuilder.Entity("AdminProjectsDemo.Entitites.ProjectExecutor", b =>
                 {
-                    b.HasOne("AdminProjectsDemo.Entitites.Ejecutor", "Ejecutor")
+                    b.HasOne("AdminProjectsDemo.Entitites.Executor", "Executor")
                         .WithMany()
-                        .HasForeignKey("EjecutorID")
+                        .HasForeignKey("ExecutorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("AdminProjectsDemo.Entitites.Proyecto", "Proyecto")
+                    b.HasOne("AdminProjectsDemo.Entitites.Proyecto", "Project")
                         .WithMany()
-                        .HasForeignKey("ProyectoID")
+                        .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Ejecutor");
+                    b.Navigation("Executor");
 
-                    b.Navigation("Proyecto");
+                    b.Navigation("Project");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

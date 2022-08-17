@@ -19,7 +19,7 @@ namespace AdminProjectsDemo.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<Executor[]>> Get()
+        public async Task<ActionResult<Ejecutor[]>> Get()
         {
             try
             {
@@ -34,7 +34,7 @@ namespace AdminProjectsDemo.Controllers
         }
 
         [HttpGet("{executorId:int}")]
-        public async Task<ActionResult<Executor>> GetById(int executorId)
+        public async Task<ActionResult<Ejecutor>> GetById(int executorId)
         {
             try
             {
@@ -55,7 +55,7 @@ namespace AdminProjectsDemo.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<int>> Create([FromBody] Executor executor)
+        public async Task<ActionResult<int>> Create([FromBody] Ejecutor executor)
         {
             try
             {
@@ -65,7 +65,7 @@ namespace AdminProjectsDemo.Controllers
                 var rowsAffected = await this._executorHandler.CreateAsync(executor);
 
                 return rowsAffected > 0 
-                                              ? Created($"{this._configuration["HostURL"]}/Executor/{executor.ExecutorId}", new { ExecutorId = executor.ExecutorId }) 
+                                              ? Created($"{this._configuration["HostURL"]}/Executor/{executor.EjecutorID}", new { ExecutorId = executor.EjecutorID }) 
                                               : BadRequest("Error when creating the executor");
             }
             catch (Exception exception)
@@ -75,14 +75,14 @@ namespace AdminProjectsDemo.Controllers
         }
 
         [HttpPut("{executorId:int}")]
-        public async Task<IActionResult> Update([FromRoute] int executorId, [FromBody] Executor executor)
+        public async Task<IActionResult> Update([FromRoute] int executorId, [FromBody] Ejecutor executor)
         {
             try
             {
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
 
-                if (executorId != executor.ExecutorId)
+                if (executorId != executor.EjecutorID)
                     return BadRequest("executorId doesn't match with the executorId of URL");
 
                 await this._executorHandler.UpdateAsync(executor);

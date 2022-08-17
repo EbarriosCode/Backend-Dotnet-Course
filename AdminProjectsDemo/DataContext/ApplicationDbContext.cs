@@ -9,16 +9,16 @@ namespace AdminProjectsDemo.DataContext
         public ApplicationDbContext(DbContextOptions options) : base(options)
         { }
 
-        public DbSet<Project> Projects { get; set; }
-        public DbSet<Activity> Activities { get; set; }
-        public DbSet<Executor> Executors { get; set; }
-        public DbSet<ProjectExecutor> ProjectsExecutors { get; set; }
+        public DbSet<Proyecto> Proyectos { get; set; }
+        public DbSet<Actividad> Actividades { get; set; }
+        public DbSet<Ejecutor> Ejecutores { get; set; }
+        public DbSet<ProyectoEjecutor> ProyectosEjecutores { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
 
-            builder.Entity<ProjectExecutor>().HasKey(pe => new { pe.ProjectId, pe.ExecutorId });
+            builder.Entity<ProyectoEjecutor>().HasKey(pe => new { pe.ProyectoID, pe.EjecutorID });
         }
     }
 }

@@ -4,10 +4,10 @@ namespace AdminProjectsDemo.Services.Projects
 {
     public interface IProjectHandler
     {
-        Task<Project[]> GetAsync();
-        Task<Project> GetByIdAsync(int projectId);
-        Task<int> CreateAsync(Project project);
-        Task UpdateAsync(Project project);
+        Task<Proyecto[]> GetAsync();
+        Task<Proyecto> GetByIdAsync(int projectId);
+        Task<int> CreateAsync(Proyecto project);
+        Task UpdateAsync(Proyecto project);
         Task<bool> DeleteAsync(int projectId);
         Task<bool> ExistRecordAsync(int projectId);
     }

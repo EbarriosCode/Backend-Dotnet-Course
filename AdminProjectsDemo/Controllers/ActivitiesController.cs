@@ -19,7 +19,7 @@ namespace AdminProjectsDemo.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<Activity[]>> Get()
+        public async Task<ActionResult<Actividad[]>> Get()
         {
             try
             {
@@ -34,7 +34,7 @@ namespace AdminProjectsDemo.Controllers
         }
 
         [HttpGet("{activityId:int}")]
-        public async Task< ActionResult<Activity>> GetById(int activityId)
+        public async Task< ActionResult<Actividad>> GetById(int activityId)
         {
             try
             {
@@ -55,7 +55,7 @@ namespace AdminProjectsDemo.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<int>> Create([FromBody] Activity activity)
+        public async Task<ActionResult<int>> Create([FromBody] Actividad activity)
         {
             try
             {
@@ -65,7 +65,7 @@ namespace AdminProjectsDemo.Controllers
                 var activityCreated = await this._activityHandler.CreateAsync(activity);
 
                 return activityCreated > 0 
-                                              ? Created($"{this._configuration["HostURL"]}/Activities/{activity.ActivityId}", new { ActivityId = activity.ActivityId }) 
+                                              ? Created($"{this._configuration["HostURL"]}/Activities/{activity.ActividadID}", new { ActivityId = activity.ActividadID }) 
                                               : BadRequest("Error when creating the activity");
             }
             catch (Exception exception)
@@ -75,14 +75,14 @@ namespace AdminProjectsDemo.Controllers
         }
 
         [HttpPut("{activityId:int}")]
-        public async Task<IActionResult> Update([FromRoute] int activityId, [FromBody] Activity activity)
+        public async Task<IActionResult> Update([FromRoute] int activityId, [FromBody] Actividad activity)
         {
             try
             {
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
 
-                if (activityId != activity.ActivityId)
+                if (activityId != activity.ActividadID)
                     return BadRequest("activityId doesn't match with the activityId of URL");
 
                 await this._activityHandler.UpdateAsync(activity);

@@ -20,7 +20,7 @@ namespace AdminProjectsDemo.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<ProjectExecutor[]>> Get()
+        public async Task<ActionResult<ProyectoEjecutor[]>> Get()
         {
             try
             {
@@ -35,7 +35,7 @@ namespace AdminProjectsDemo.Controllers
         }
 
         [HttpGet("{projectId:int}/{executorId:int}")]
-        public async Task<ActionResult<Executor>> GetByProjectId([FromRoute] int projectId, [FromRoute] int executorId)
+        public async Task<ActionResult<Ejecutor>> GetByProjectId([FromRoute] int projectId, [FromRoute] int executorId)
         {
             try
             {
@@ -56,7 +56,7 @@ namespace AdminProjectsDemo.Controllers
         }       
 
         [HttpPost]
-        public async Task<ActionResult<int>> Create([FromBody] ProjectExecutor projectExecutor)
+        public async Task<ActionResult<int>> Create([FromBody] ProyectoEjecutor projectExecutor)
         {
             try
             {
@@ -66,7 +66,7 @@ namespace AdminProjectsDemo.Controllers
                 var rowsAffected = await this._projectExecutorHandler.CreateAsync(projectExecutor);
 
                 return rowsAffected > 0 
-                                              ? Created(string.Empty, new { ProjectId = projectExecutor.ProjectId, ExecutorId = projectExecutor.ExecutorId }) 
+                                              ? Created(string.Empty, new { ProjectId = projectExecutor.ProyectoID, ExecutorId = projectExecutor.EjecutorID }) 
                                               : BadRequest("Error when creating the projectExecutor relation");
             }
             catch (Exception exception)

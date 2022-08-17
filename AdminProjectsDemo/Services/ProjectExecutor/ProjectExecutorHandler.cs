@@ -9,35 +9,35 @@ namespace AdminProjectsDemo.Services.ProjectExecutor
 
         public ProjectExecutorHandler(ApplicationDbContext context) => this._context = context;
 
-        public async Task<Entitites.ProjectExecutor[]> GetAsync()
+        public async Task<Entitites.ProyectoEjecutor[]> GetAsync()
         {
-            var projectExecutorsDb = this._context.ProjectsExecutors
-                                                  .Include(x => x.Project)
-                                                    .ThenInclude(y => y.Activities)
-                                                  .Include(x => x.Executor)
+            var projectExecutorsDb = this._context.ProyectosEjecutores
+                                                  .Include(x => x.Proyecto)
+                                                    .ThenInclude(y => y.Actividades)
+                                                  .Include(x => x.Ejecutor)
                                                   .ToArray();
 
             return await Task.FromResult(projectExecutorsDb);
         }
 
-        public async Task<int> CreateAsync(Entitites.ProjectExecutor projectExecutor)
+        public async Task<int> CreateAsync(Entitites.ProyectoEjecutor projectExecutor)
         {
             if (projectExecutor == null)
                 return 0;
 
-            this._context.ProjectsExecutors.Add(projectExecutor);
+            this._context.ProyectosEjecutores.Add(projectExecutor);
             var rowAffected = await this._context.SaveChangesAsync();
 
             return rowAffected;
         }
 
-        public async Task<Entitites.ProjectExecutor> GetByProjectIdAndExecutorIdAsync(int projectId, int executorId)
+        public async Task<Entitites.ProyectoEjecutor> GetByProjectIdAndExecutorIdAsync(int projectId, int executorId)
         {
-            var projectExecutor = await this._context.ProjectsExecutors
-                                                    .Include(x => x.Project)
-                                                        .ThenInclude(y => y.Activities)
-                                                    .Include(x => x.Executor)
-                                                    .FirstOrDefaultAsync(x => x.ProjectId == projectId && x.ExecutorId == executorId);
+            var projectExecutor = await this._context.ProyectosEjecutores
+                                                    .Include(x => x.Proyecto)
+                                                        .ThenInclude(y => y.Actividades)
+                                                    .Include(x => x.Ejecutor)
+                                                    .FirstOrDefaultAsync(x => x.ProyectoID == projectId && x.EjecutorID == executorId);
 
             return await Task.FromResult(projectExecutor);
         }

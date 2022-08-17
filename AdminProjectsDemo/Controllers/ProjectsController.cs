@@ -19,7 +19,7 @@ namespace AdminProjectsDemo.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<Project[]>> Get()
+        public async Task<ActionResult<Proyecto[]>> Get()
         {
             try
             {
@@ -34,7 +34,7 @@ namespace AdminProjectsDemo.Controllers
         }
 
         [HttpGet("{projectId:int}")]
-        public async Task<ActionResult<Project>> GetById(int projectId)
+        public async Task<ActionResult<Proyecto>> GetById(int projectId)
         {
             try
             {
@@ -55,7 +55,7 @@ namespace AdminProjectsDemo.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<int>> Create([FromBody] Project project)
+        public async Task<ActionResult<int>> Create([FromBody] Proyecto project)
         {
             try
             {
@@ -65,7 +65,7 @@ namespace AdminProjectsDemo.Controllers
                 var projectCreated = await this._projectHandler.CreateAsync(project);
 
                 return projectCreated > 0 
-                                              ? Created($"{this._configuration["HostURL"]}/Projects/{project.ProjectId}", new { ProjectId = project.ProjectId }) 
+                                              ? Created($"{this._configuration["HostURL"]}/Projects/{project.ProyectoID}", new { ProjectId = project.ProyectoID }) 
                                               : BadRequest("Error when creating the project");
             }
             catch (Exception exception)
@@ -75,14 +75,14 @@ namespace AdminProjectsDemo.Controllers
         }
 
         [HttpPut("{projectId:int}")]
-        public async Task<IActionResult> Update([FromRoute] int projectId, [FromBody] Project project)
+        public async Task<IActionResult> Update([FromRoute] int projectId, [FromBody] Proyecto project)
         {
             try
             {
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
 
-                if (projectId != project.ProjectId)
+                if (projectId != project.ProyectoID)
                     return BadRequest("projectId doesn't match with the projectId of URL");
 
                 await this._projectHandler.UpdateAsync(project);

@@ -10,32 +10,32 @@ namespace AdminProjectsDemo.Services.Projects
 
         public ProjectHandler(ApplicationDbContext context) => this._context = context;        
 
-        public async Task<Project[]> GetAsync()
+        public async Task<Proyecto[]> GetAsync()
         {                     
-            var projectsDb = this._context.Projects.Include(x => x.Activities).ToArray();
+            var projectsDb = this._context.Proyectos.Include(x => x.Actividades).ToArray();
 
             return await Task.FromResult(projectsDb);
         }
 
-        public async Task<Project> GetByIdAsync(int projectId)
+        public async Task<Proyecto> GetByIdAsync(int projectId)
         {
-            var project = await this._context.Projects.FirstOrDefaultAsync(x => x.ProjectId == projectId);
+            var project = await this._context.Proyectos.FirstOrDefaultAsync(x => x.ProyectoID == projectId);
 
             return await Task.FromResult(project);
         }
 
-        public async Task<int> CreateAsync(Project project)
+        public async Task<int> CreateAsync(Proyecto project)
         {
             if(project == null)
                 return 0;
 
-            this._context.Projects.Add(project);
+            this._context.Proyectos.Add(project);
             var projectId = await this._context.SaveChangesAsync();
 
             return projectId;
         }
 
-        public async Task UpdateAsync(Project project)
+        public async Task UpdateAsync(Proyecto project)
         {
             this._context.Entry(project).State = EntityState.Modified;
             await this._context.SaveChangesAsync();
@@ -43,14 +43,14 @@ namespace AdminProjectsDemo.Services.Projects
 
         public async Task<bool> DeleteAsync(int projectId)
         {
-            var existProject = await this._context.Projects.AnyAsync(x => x.ProjectId == projectId);
+            var existProject = await this._context.Proyectos.AnyAsync(x => x.ProyectoID == projectId);
 
             if(!existProject)
                 return false;
 
-            var projectToDelete = new Project() { ProjectId = projectId };
+            var projectToDelete = new Proyecto() { ProyectoID = projectId };
             
-            this._context.Projects.Remove(projectToDelete);
+            this._context.Proyectos.Remove(projectToDelete);
             await this._context.SaveChangesAsync();
 
             return true;
@@ -61,7 +61,7 @@ namespace AdminProjectsDemo.Services.Projects
             if (projectId <= 0)
                 throw new ArgumentException("Invalid projectId");
 
-            bool existRecord = await this._context.Projects.AnyAsync(x =>x.ProjectId == projectId);
+            bool existRecord = await this._context.Proyectos.AnyAsync(x =>x.ProyectoID == projectId);
 
             return existRecord;
         }

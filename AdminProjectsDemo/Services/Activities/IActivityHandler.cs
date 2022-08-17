@@ -4,10 +4,10 @@ namespace AdminProjectsDemo.Services.Activities
 {
     public interface IActivityHandler
     {
-        Task<Activity[]> GetAsync();
-        Task<Activity> GetByIdAsync(int activityId);
-        Task<int> CreateAsync(Activity activity);
-        Task UpdateAsync(Activity activity);
+        Task<Actividad[]> GetAsync();
+        Task<Actividad> GetByIdAsync(int activityId);
+        Task<int> CreateAsync(Actividad activity);
+        Task UpdateAsync(Actividad activity);
         Task<bool> DeleteAsync(int activityId);
         Task<bool> ExistRecordAsync(int activityId);
     }

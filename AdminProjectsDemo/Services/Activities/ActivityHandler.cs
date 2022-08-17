@@ -10,32 +10,32 @@ namespace AdminProjectsDemo.Services.Activities
 
         public ActivityHandler(ApplicationDbContext context) => this._context = context;        
 
-        public async Task<Activity[]> GetAsync()
+        public async Task<Actividad[]> GetAsync()
         {                     
-            var activitiesDb = this._context.Activities.ToArray();
+            var activitiesDb = this._context.Actividades.ToArray();
 
             return await Task.FromResult(activitiesDb);
         }
 
-        public async Task<Activity> GetByIdAsync(int activityId)
+        public async Task<Actividad> GetByIdAsync(int activityId)
         {
-            var activity = await this._context.Activities.FirstOrDefaultAsync(x => x.ActivityId == activityId);
+            var activity = await this._context.Actividades.FirstOrDefaultAsync(x => x.ActividadID == activityId);
 
             return await Task.FromResult(activity);
         }
 
-        public async Task<int> CreateAsync(Activity activity)
+        public async Task<int> CreateAsync(Actividad activity)
         {
             if(activity == null)
                 return 0;
 
-            this._context.Activities.Add(activity);
+            this._context.Actividades.Add(activity);
             var activityId = await this._context.SaveChangesAsync();
 
             return activityId;
         }
 
-        public async Task UpdateAsync(Activity activity)
+        public async Task UpdateAsync(Actividad activity)
         {
             this._context.Entry(activity).State = EntityState.Modified;
             await this._context.SaveChangesAsync();
@@ -43,14 +43,14 @@ namespace AdminProjectsDemo.Services.Activities
 
         public async Task<bool> DeleteAsync(int activityId)
         {
-            var existActivity = await this._context.Activities.AnyAsync(x => x.ActivityId == activityId);
+            var existActivity = await this._context.Actividades.AnyAsync(x => x.ActividadID == activityId);
 
             if(!existActivity)
                 return false;
 
-            var activityToDelete = new Activity() { ActivityId = activityId };
+            var activityToDelete = new Actividad() { ActividadID = activityId };
             
-            this._context.Activities.Remove(activityToDelete);
+            this._context.Actividades.Remove(activityToDelete);
             await this._context.SaveChangesAsync();
 
             return true;
@@ -61,7 +61,7 @@ namespace AdminProjectsDemo.Services.Activities
             if (activityId <= 0)
                 throw new ArgumentException("Invalid ActivityId");
 
-            bool existRecord = await this._context.Activities.AnyAsync(x =>x.ActivityId == activityId);
+            bool existRecord = await this._context.Actividades.AnyAsync(x =>x.ActividadID == activityId);
 
             return existRecord;
         }
