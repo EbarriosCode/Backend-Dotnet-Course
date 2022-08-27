@@ -30,9 +30,9 @@ namespace AdminProjectsDemo.Services.Projects
                 return 0;
 
             this._context.Proyectos.Add(project);
-            var projectId = await this._context.SaveChangesAsync();
+            var rowAffected = await this._context.SaveChangesAsync();
 
-            return projectId;
+            return rowAffected;
         }
 
         public async Task UpdateAsync(Proyecto project)
@@ -43,25 +43,17 @@ namespace AdminProjectsDemo.Services.Projects
 
         public async Task<bool> DeleteAsync(int projectId)
         {
-            var existProject = await this._context.Proyectos.AnyAsync(x => x.ProyectoID == projectId);
-
-            if(!existProject)
-                return false;
-
             var projectToDelete = new Proyecto() { ProyectoID = projectId };
             
             this._context.Proyectos.Remove(projectToDelete);
-            await this._context.SaveChangesAsync();
+            var rowAffected = await this._context.SaveChangesAsync();
 
-            return true;
+            return rowAffected > 0;
         }
 
         public async Task<bool> ExistRecordAsync(int projectId)
         {
-            if (projectId <= 0)
-                throw new ArgumentException("Invalid projectId");
-
-            bool existRecord = await this._context.Proyectos.AnyAsync(x =>x.ProyectoID == projectId);
+           bool existRecord = await this._context.Proyectos.AnyAsync(x =>x.ProyectoID == projectId);
 
             return existRecord;
         }

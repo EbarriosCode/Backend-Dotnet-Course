@@ -30,9 +30,9 @@ namespace AdminProjectsDemo.Services.Activities
                 return 0;
 
             this._context.Actividades.Add(activity);
-            var activityId = await this._context.SaveChangesAsync();
+            var rowAffected = await this._context.SaveChangesAsync();
 
-            return activityId;
+            return rowAffected;
         }
 
         public async Task UpdateAsync(Actividad activity)
@@ -43,24 +43,16 @@ namespace AdminProjectsDemo.Services.Activities
 
         public async Task<bool> DeleteAsync(int activityId)
         {
-            var existActivity = await this._context.Actividades.AnyAsync(x => x.ActividadID == activityId);
-
-            if(!existActivity)
-                return false;
-
-            var activityToDelete = new Actividad() { ActividadID = activityId };
+           var activityToDelete = new Actividad() { ActividadID = activityId };
             
             this._context.Actividades.Remove(activityToDelete);
-            await this._context.SaveChangesAsync();
+            var rowAffected = await this._context.SaveChangesAsync();
 
-            return true;
+            return rowAffected > 0;
         }
 
         public async Task<bool> ExistRecordAsync(int activityId)
         {
-            if (activityId <= 0)
-                throw new ArgumentException("Invalid ActivityId");
-
             bool existRecord = await this._context.Actividades.AnyAsync(x =>x.ActividadID == activityId);
 
             return existRecord;

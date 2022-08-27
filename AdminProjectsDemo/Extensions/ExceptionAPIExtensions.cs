@@ -27,6 +27,15 @@ namespace AdminProjectsDemo.Extensions
 
                     return new UnauthorizedObjectResult(problemDetails);
 
+                case InvalidOperationException _:
+                    problemDetails.Status = 500;
+                    problemDetails.Type = $"https://httpstatuses.com/500";
+
+                    return new ObjectResult(problemDetails)
+                    {
+                        StatusCode = StatusCodes.Status500InternalServerError
+                    };
+
                 case HttpRequestException _:
                     problemDetails.Status = 500;
                     problemDetails.Type = $"https://httpstatuses.com/500";

@@ -1,12 +1,15 @@
 ﻿using AdminProjectsDemo.Entitites;
 using AdminProjectsDemo.Extensions;
 using AdminProjectsDemo.Services.Executors;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AdminProjectsDemo.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class ExecutorsController : ControllerBase
     {
         private readonly IExecutorHandler _executorHandler;
@@ -29,7 +32,7 @@ namespace AdminProjectsDemo.Controllers
             }
             catch (Exception exception)
             {
-                return BadRequest(exception.Message);
+                return exception.ConvertToActionResult(HttpContext);
             }
         }
 
@@ -39,7 +42,7 @@ namespace AdminProjectsDemo.Controllers
             try
             {
                 if (executorId <= 0)
-                    return BadRequest("Invalid ExecutorId");
+                    throw new ArgumentException("Invalid ExecutorId");
 
                 var executor = await this._executorHandler.GetByIdAsync(executorId);
 
@@ -50,7 +53,7 @@ namespace AdminProjectsDemo.Controllers
             }
             catch (Exception exception)
             {
-                return BadRequest(exception.Message);
+                return exception.ConvertToActionResult(HttpContext);
             }
         }
 
@@ -70,7 +73,7 @@ namespace AdminProjectsDemo.Controllers
             }
             catch (Exception exception)
             {
-                return BadRequest(exception.Message);
+                return exception.ConvertToActionResult(HttpContext);
             }
         }
 
@@ -83,7 +86,7 @@ namespace AdminProjectsDemo.Controllers
                     return BadRequest(ModelState);
 
                 if (executorId != executor.EjecutorID)
-                    return BadRequest("executorId doesn't match with the executorId of URL");
+                    throw new ArgumentException("executorId doesn't match with the executorId of URL");
 
                 await this._executorHandler.UpdateAsync(executor);
 
@@ -91,7 +94,7 @@ namespace AdminProjectsDemo.Controllers
             }
             catch (Exception exception)
             {
-                return BadRequest(exception.Message);
+                return exception.ConvertToActionResult(HttpContext);
             }
         }
 
@@ -100,6 +103,9 @@ namespace AdminProjectsDemo.Controllers
         {
             try
             {
+                if (executorId <= 0)
+                    throw new ArgumentException("Invalid ExecutorId");
+
                 var existExecutor = await this._executorHandler.ExistRecordAsync(executorId);
 
                 if (!existExecutor)

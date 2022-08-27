@@ -2,11 +2,14 @@
 using AdminProjectsDemo.Services.Projects;
 using Microsoft.AspNetCore.Mvc;
 using AdminProjectsDemo.Extensions;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace AdminProjectsDemo.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class ProjectsController : ControllerBase
     {
         private readonly IProjectHandler _projectHandler;
@@ -29,7 +32,7 @@ namespace AdminProjectsDemo.Controllers
             }
             catch (Exception exception)
             {
-                return BadRequest(exception.Message);
+                return exception.ConvertToActionResult(HttpContext);
             }
         }
 
@@ -39,7 +42,7 @@ namespace AdminProjectsDemo.Controllers
             try
             {
                 if (projectId <= 0)
-                    return BadRequest("Invalid ProjectId");
+                    throw new ArgumentException("Invalid ProjectId");
 
                 var project = await this._projectHandler.GetByIdAsync(projectId);
 
@@ -50,7 +53,7 @@ namespace AdminProjectsDemo.Controllers
             }
             catch (Exception exception)
             {
-                return BadRequest(exception.Message);
+                return exception.ConvertToActionResult(HttpContext);
             }
         }
 
@@ -70,7 +73,7 @@ namespace AdminProjectsDemo.Controllers
             }
             catch (Exception exception)
             {
-                return BadRequest(exception.Message);
+                return exception.ConvertToActionResult(HttpContext);
             }
         }
 
@@ -83,7 +86,7 @@ namespace AdminProjectsDemo.Controllers
                     return BadRequest(ModelState);
 
                 if (projectId != project.ProyectoID)
-                    return BadRequest("projectId doesn't match with the projectId of URL");
+                    throw new ArgumentException("projectId doesn't match with the projectId of URL");
 
                 await this._projectHandler.UpdateAsync(project);
 
@@ -91,7 +94,7 @@ namespace AdminProjectsDemo.Controllers
             }
             catch (Exception exception)
             {
-                return BadRequest(exception.Message);
+                return exception.ConvertToActionResult(HttpContext);
             }
         }
 
@@ -100,6 +103,9 @@ namespace AdminProjectsDemo.Controllers
         {
             try
             {
+                if (projectId <= 0)
+                    throw new ArgumentException("Invalid ProjectId");
+
                 var existProject = await this._projectHandler.ExistRecordAsync(projectId);
 
                 if (!existProject)

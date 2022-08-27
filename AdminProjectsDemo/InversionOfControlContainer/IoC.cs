@@ -3,7 +3,7 @@ using AdminProjectsDemo.Services.Executors;
 using AdminProjectsDemo.Services.ProjectExecutor;
 using AdminProjectsDemo.Services.Projects;
 
-namespace AdminProjectsDemo.Middleware
+namespace AdminProjectsDemo.InversionOfControlContainer
 {
     public static class IoC
     {

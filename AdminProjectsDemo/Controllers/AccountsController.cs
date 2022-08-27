@@ -1,5 +1,6 @@
 ﻿using AdminProjectsDemo.DTOs.Request;
 using AdminProjectsDemo.DTOs.Response;
+using AdminProjectsDemo.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -40,7 +41,7 @@ namespace AdminProjectsDemo.Controllers
             }
             catch (Exception exception)
             {
-                return BadRequest(exception.Message);
+                return exception.ConvertToActionResult(HttpContext);
             }
         }
 
@@ -58,7 +59,7 @@ namespace AdminProjectsDemo.Controllers
             }
             catch (Exception exception)
             {
-                return BadRequest(exception.Message);
+                return exception.ConvertToActionResult(HttpContext);
             }
         }
 
@@ -82,7 +83,7 @@ namespace AdminProjectsDemo.Controllers
                 {
                     await this._userManager.AddToRoleAsync(user, "Invitado");
 
-                    var tokenResponse = this.BuildToken(userCredentials);
+                    var tokenResponse = await this.BuildToken(userCredentials);
 
                     return Created($"{this._configuration["HostURL"]}/Accounts/{user.Id}", tokenResponse);
                 }               
@@ -91,7 +92,7 @@ namespace AdminProjectsDemo.Controllers
             }
             catch (Exception exception)
             {
-                return BadRequest(exception.Message);
+                return exception.ConvertToActionResult(HttpContext);
             }
         }
 
@@ -117,7 +118,7 @@ namespace AdminProjectsDemo.Controllers
             }
             catch (Exception exception)
             {
-                return BadRequest(exception.Message);
+                return exception.ConvertToActionResult(HttpContext);
             }
         }
 
@@ -137,7 +138,7 @@ namespace AdminProjectsDemo.Controllers
             }
             catch (Exception exception)
             {
-                return BadRequest(exception.Message);
+                return exception.ConvertToActionResult(HttpContext);
             }
         }
 
@@ -155,7 +156,7 @@ namespace AdminProjectsDemo.Controllers
                                                                                 lockoutOnFailure: false);
 
                 if (loginResult.Succeeded)
-                    return BuildToken(userCredentials);
+                    return await BuildToken(userCredentials);
 
                 return BadRequest("Invalid Login");
             }
@@ -165,12 +166,21 @@ namespace AdminProjectsDemo.Controllers
             }
         }        
 
-        private AuthenticationResponse BuildToken(UserCredentials userCredentials)
+        private async Task<AuthenticationResponse> BuildToken(UserCredentials userCredentials)
         {
+            var user = await this._signInManager.UserManager.FindByEmailAsync(userCredentials.Email);
+            var roles = await this._signInManager.UserManager.GetRolesAsync(user);
+
             var claims = new List<Claim>()
-            {
-                new Claim("Email", userCredentials.Email)
+            {                
+                new Claim(JwtRegisteredClaimNames.UniqueName, userCredentials.Email),
+                new Claim(ClaimTypes.Name, user.Email),
+                new Claim(JwtRegisteredClaimNames.NameId, user.Id)
             };
+
+            if(roles.Count > 0)
+                foreach (var role in roles)
+                    claims.Add(new Claim(ClaimTypes.Role, role));
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this._configuration["JwtKey"]));
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);

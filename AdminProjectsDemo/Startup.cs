@@ -1,10 +1,11 @@
 ﻿using AdminProjectsDemo.DataContext;
-using AdminProjectsDemo.Middleware;
+using AdminProjectsDemo.InversionOfControlContainer;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 
 namespace AdminProjectsDemo
@@ -14,6 +15,7 @@ namespace AdminProjectsDemo
         public IConfiguration Configuration { get; }
         public Startup(IConfiguration configuration)
         {
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
             Configuration = configuration;
         }
 
@@ -89,6 +91,14 @@ namespace AdminProjectsDemo
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.Map("/ruta1", app =>
+            {
+                app.Run(async context =>
+                {
+                    await context.Response.WriteAsync("Este es mi middleware");
+                });
+            });
+
             // Configure the HTTP request pipeline.
             if (env.IsDevelopment())
             {

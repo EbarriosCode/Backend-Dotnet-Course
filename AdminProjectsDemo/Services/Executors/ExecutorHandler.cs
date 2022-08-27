@@ -42,25 +42,17 @@ namespace AdminProjectsDemo.Services.Executors
         }
 
         public async Task<bool> DeleteAsync(int executorId)
-        {
-            var existExecutor = await this._context.Ejecutores.AnyAsync(x => x.EjecutorID == executorId);
-
-            if (!existExecutor)
-                return false;
-
+        {            
             var executorToDelete = new Ejecutor() { EjecutorID = executorId };
 
             this._context.Ejecutores.Remove(executorToDelete);
-            await this._context.SaveChangesAsync();
+            var rowAffected = await this._context.SaveChangesAsync();
 
-            return true;
+            return rowAffected > 0;
         }
 
         public async Task<bool> ExistRecordAsync(int executorId)
         {
-            if (executorId <= 0)
-                throw new ArgumentException("Invalid ExecutorId");
-
             bool existRecord = await this._context.Ejecutores.AnyAsync(x => x.EjecutorID == executorId);
 
             return existRecord;

@@ -1,13 +1,15 @@
 ﻿using AdminProjectsDemo.Entitites;
 using AdminProjectsDemo.Extensions;
-using AdminProjectsDemo.Services.Executors;
 using AdminProjectsDemo.Services.ProjectExecutor;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AdminProjectsDemo.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class ProjectsExecutorsController : ControllerBase
     {
         private readonly IProjectExecutorHandler _projectExecutorHandler;
@@ -30,17 +32,17 @@ namespace AdminProjectsDemo.Controllers
             }
             catch (Exception exception)
             {
-                return BadRequest(exception.Message);
+                return exception.ConvertToActionResult(HttpContext);
             }
         }
 
         [HttpGet("{projectId:int}/{executorId:int}")]
-        public async Task<ActionResult<Ejecutor>> GetByProjectId([FromRoute] int projectId, [FromRoute] int executorId)
+        public async Task<ActionResult<ProyectoEjecutor>> GetByProjectIdAndExecutorId([FromRoute] int projectId, [FromRoute] int executorId)
         {
             try
             {
-                if (projectId <= 0)
-                    return BadRequest("Invalid ProjectId");
+                if (projectId <= 0 || executorId <= 0)
+                    throw new ArgumentException("ProjectId or ExecutorId is Invalid");
 
                 var projectExecutor = await this._projectExecutorHandler.GetByProjectIdAndExecutorIdAsync(projectId, executorId);
 
@@ -51,7 +53,7 @@ namespace AdminProjectsDemo.Controllers
             }
             catch (Exception exception)
             {
-                return BadRequest(exception.Message);
+                return exception.ConvertToActionResult(HttpContext);
             }
         }       
 
@@ -66,12 +68,12 @@ namespace AdminProjectsDemo.Controllers
                 var rowsAffected = await this._projectExecutorHandler.CreateAsync(projectExecutor);
 
                 return rowsAffected > 0 
-                                              ? Created(string.Empty, new { ProjectId = projectExecutor.ProyectoID, ExecutorId = projectExecutor.EjecutorID }) 
-                                              : BadRequest("Error when creating the projectExecutor relation");
+                                        ? Created($"{this._configuration["HostURL"]}/ProjectsExecutors/{projectExecutor.ProyectoID}/{projectExecutor.EjecutorID}", new { ProjectId = projectExecutor.ProyectoID, ExecutorId = projectExecutor.EjecutorID }) 
+                                        : BadRequest("Error when creating the projectExecutor relation");
             }
             catch (Exception exception)
             {
-                return BadRequest(exception.Message);
+                return exception.ConvertToActionResult(HttpContext);
             }
         }
     }

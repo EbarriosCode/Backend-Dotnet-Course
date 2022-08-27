@@ -1,12 +1,15 @@
 ﻿using AdminProjectsDemo.Entitites;
 using AdminProjectsDemo.Extensions;
 using AdminProjectsDemo.Services.Activities;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AdminProjectsDemo.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class ActivitiesController : ControllerBase
     {
         private readonly IActivityHandler _activityHandler;
@@ -18,7 +21,9 @@ namespace AdminProjectsDemo.Controllers
            this._configuration = configuration;
         }
 
+        
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult<Actividad[]>> Get()
         {
             try
@@ -29,7 +34,7 @@ namespace AdminProjectsDemo.Controllers
             }
             catch (Exception exception)
             {
-                return BadRequest(exception.Message);
+                return exception.ConvertToActionResult(HttpContext);
             }
         }
 
@@ -39,7 +44,7 @@ namespace AdminProjectsDemo.Controllers
             try
             {
                 if (activityId <= 0)
-                    return BadRequest("Invalid ActivityId");
+                    throw new ArgumentException("Invalid ActivityId");
 
                 var activity = await this._activityHandler.GetByIdAsync(activityId);
 
@@ -50,7 +55,7 @@ namespace AdminProjectsDemo.Controllers
             }
             catch (Exception exception)
             {
-                return BadRequest(exception.Message);
+                return exception.ConvertToActionResult(HttpContext);
             }
         }
 
@@ -70,7 +75,7 @@ namespace AdminProjectsDemo.Controllers
             }
             catch (Exception exception)
             {
-                return BadRequest(exception.Message);
+                return exception.ConvertToActionResult(HttpContext);
             }
         }
 
@@ -83,7 +88,7 @@ namespace AdminProjectsDemo.Controllers
                     return BadRequest(ModelState);
 
                 if (activityId != activity.ActividadID)
-                    return BadRequest("activityId doesn't match with the activityId of URL");
+                    throw new ArgumentException("activityId doesn't match with the activityId of URL");
 
                 await this._activityHandler.UpdateAsync(activity);
 
@@ -91,7 +96,7 @@ namespace AdminProjectsDemo.Controllers
             }
             catch (Exception exception)
             {
-                return BadRequest(exception.Message);
+                return exception.ConvertToActionResult(HttpContext);
             }
         }
 
@@ -100,6 +105,9 @@ namespace AdminProjectsDemo.Controllers
         {
             try
             {
+                if (activityId <= 0)
+                    throw new ArgumentException("Invalid ActivityId");
+
                 var existActivity = await this._activityHandler.ExistRecordAsync(activityId);
 
                 if (!existActivity)
