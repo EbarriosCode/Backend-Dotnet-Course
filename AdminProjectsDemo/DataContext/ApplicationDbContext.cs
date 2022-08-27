@@ -13,6 +13,7 @@ namespace AdminProjectsDemo.DataContext
         public DbSet<Actividad> Actividades { get; set; }
         public DbSet<Ejecutor> Ejecutores { get; set; }
         public DbSet<ProyectoEjecutor> ProyectosEjecutores { get; set; }
+        public DbSet<Beneficiario> Beneficiarios { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

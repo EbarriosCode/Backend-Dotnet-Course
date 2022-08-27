@@ -1,4 +1,5 @@
 ﻿using AdminProjectsDemo.Services.Activities;
+using AdminProjectsDemo.Services.Beneficiaries;
 using AdminProjectsDemo.Services.Executors;
 using AdminProjectsDemo.Services.ProjectExecutor;
 using AdminProjectsDemo.Services.Projects;
@@ -13,6 +14,7 @@ namespace AdminProjectsDemo.InversionOfControlContainer
             services.AddTransient<IActivityHandler, ActivityHandler>();
             services.AddTransient<IExecutorHandler, ExecutorHandler>();
             services.AddTransient<IProjectExecutorHandler, ProjectExecutorHandler>();
+            services.AddTransient<IBeneficiaryHandler, BeneficiaryHandler>();
 
             return services;
         }
