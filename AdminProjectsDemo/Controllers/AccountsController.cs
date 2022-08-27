@@ -1,6 +1,7 @@
 ﻿using AdminProjectsDemo.DTOs.Request;
 using AdminProjectsDemo.DTOs.Response;
 using AdminProjectsDemo.Extensions;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -14,6 +15,7 @@ namespace AdminProjectsDemo.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class AccountsController : ControllerBase
     {
         private readonly UserManager<IdentityUser> _userManager;
@@ -63,6 +65,7 @@ namespace AdminProjectsDemo.Controllers
             }
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public async Task<ActionResult<AuthenticationResponse>> Create([FromBody] UserCredentials userCredentials)
         {
@@ -142,6 +145,7 @@ namespace AdminProjectsDemo.Controllers
             }
         }
 
+        [AllowAnonymous]
         [HttpPost("Login")]
         public async Task<ActionResult<AuthenticationResponse>> Login([FromBody] UserCredentials userCredentials)
         {
