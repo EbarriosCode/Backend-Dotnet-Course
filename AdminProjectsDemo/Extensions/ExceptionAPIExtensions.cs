@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace AdminProjectsDemo.Extensions
 {
@@ -16,6 +17,12 @@ namespace AdminProjectsDemo.Extensions
             switch (exception)
             {
                 case ArgumentException _:
+                    problemDetails.Status = 400;
+                    problemDetails.Type = "https://httpstatuses.com/400";
+
+                    return new BadRequestObjectResult(problemDetails);
+
+                case DbUpdateException _:
                     problemDetails.Status = 400;
                     problemDetails.Type = "https://httpstatuses.com/400";
 
