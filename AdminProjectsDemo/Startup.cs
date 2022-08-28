@@ -87,6 +87,9 @@ namespace AdminProjectsDemo
 
             // Own services configuration
             IoC.AddDependency(services);
+
+            // AutoMapper Configuration
+            services.AddAutoMapper(typeof(Startup));
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

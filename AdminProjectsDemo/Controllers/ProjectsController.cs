@@ -4,21 +4,25 @@ using Microsoft.AspNetCore.Mvc;
 using AdminProjectsDemo.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using AutoMapper;
+using AdminProjectsDemo.DTOs.Projects.Request;
 
 namespace AdminProjectsDemo.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class ProjectsController : ControllerBase
     {
         private readonly IProjectHandler _projectHandler;
         private readonly IConfiguration _configuration;
+        private readonly IMapper _mapper;
 
-        public ProjectsController(IProjectHandler projectHandler, IConfiguration configuration)
+        public ProjectsController(IProjectHandler projectHandler, IConfiguration configuration, IMapper mapper)
         {
-           this. _projectHandler = projectHandler;
-           this._configuration = configuration;
+            this. _projectHandler = projectHandler;
+            this._configuration = configuration;
+            this._mapper = mapper;
         }
 
         [HttpGet]
@@ -58,12 +62,14 @@ namespace AdminProjectsDemo.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<int>> Create([FromBody] Proyecto project)
+        public async Task<ActionResult<int>> Create([FromBody] ProjectCreationRequest projectCreateRequest)
         {
             try
             {
                 if(!ModelState.IsValid)
                     return BadRequest(ModelState);
+
+                var project = this._mapper.Map<Proyecto>(projectCreateRequest);
 
                 var projectCreated = await this._projectHandler.CreateAsync(project);
 
@@ -78,16 +84,18 @@ namespace AdminProjectsDemo.Controllers
         }
 
         [HttpPut("{projectId:int}")]
-        public async Task<IActionResult> Update([FromRoute] int projectId, [FromBody] Proyecto project)
+        public async Task<IActionResult> Update([FromRoute] int projectId, [FromBody] ProjectUpdateRequest projectUpdateRequest)
         {
             try
             {
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
+                
 
-                if (projectId != project.ProyectoID)
+                if (projectId != projectUpdateRequest.ProyectoID)
                     throw new ArgumentException("projectId doesn't match with the projectId of URL");
 
+                var project = this._mapper.Map<Proyecto>(projectUpdateRequest);
                 await this._projectHandler.UpdateAsync(project);
 
                 return NoContent();

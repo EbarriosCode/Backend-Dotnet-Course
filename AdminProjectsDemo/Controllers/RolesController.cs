@@ -54,7 +54,7 @@ namespace AdminProjectsDemo.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<IdentityRole>> Create([FromBody] RolCreateRequest rolRequest)
+        public async Task<ActionResult<IdentityRole>> Create([FromBody] RolCreationRequest rolRequest)
         {
             try
             {

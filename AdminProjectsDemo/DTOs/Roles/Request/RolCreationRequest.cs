@@ -2,7 +2,7 @@
 
 namespace AdminProjectsDemo.DTOs.Roles.Request
 {
-    public class RolCreateRequest
+    public class RolCreationRequest
     {
         [Required]
         public string Name { get; set; }
