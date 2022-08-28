@@ -1,5 +1,5 @@
-﻿using AdminProjectsDemo.DTOs.Request;
-using AdminProjectsDemo.DTOs.Response;
+﻿using AdminProjectsDemo.DTOs.Accounts.Request;
+using AdminProjectsDemo.DTOs.Accounts.Response;
 using AdminProjectsDemo.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -67,7 +67,7 @@ namespace AdminProjectsDemo.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        public async Task<ActionResult<AuthenticationResponse>> Create([FromBody] UserCredentials userCredentials)
+        public async Task<ActionResult<AuthenticationResponse>> Create([FromBody] UserCredentialsRequest userCredentials)
         {
             try
             {
@@ -147,7 +147,7 @@ namespace AdminProjectsDemo.Controllers
 
         [AllowAnonymous]
         [HttpPost("Login")]
-        public async Task<ActionResult<AuthenticationResponse>> Login([FromBody] UserCredentials userCredentials)
+        public async Task<ActionResult<AuthenticationResponse>> Login([FromBody] UserCredentialsRequest userCredentials)
         {
             try
             {
@@ -170,7 +170,7 @@ namespace AdminProjectsDemo.Controllers
             }
         }        
 
-        private async Task<AuthenticationResponse> BuildToken(UserCredentials userCredentials)
+        private async Task<AuthenticationResponse> BuildToken(UserCredentialsRequest userCredentials)
         {
             var user = await this._signInManager.UserManager.FindByEmailAsync(userCredentials.Email);
             var roles = await this._signInManager.UserManager.GetRolesAsync(user);

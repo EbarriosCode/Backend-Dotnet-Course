@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace AdminProjectsDemo.DTOs.Request
+namespace AdminProjectsDemo.DTOs.Roles.Request
 {
     public class RolCreateRequest
     {

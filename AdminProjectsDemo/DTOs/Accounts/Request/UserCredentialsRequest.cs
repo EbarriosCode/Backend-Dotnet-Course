@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace AdminProjectsDemo.DTOs.Response
+namespace AdminProjectsDemo.DTOs.Accounts.Request
 {
-    public class UserCredentials
+    public class UserCredentialsRequest
     {
         [Required]
         [EmailAddress]
