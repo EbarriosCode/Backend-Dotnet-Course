@@ -1,6 +1,8 @@
-﻿using AdminProjectsDemo.Entitites;
+﻿using AdminProjectsDemo.DTOs.Executors.Request;
+using AdminProjectsDemo.Entitites;
 using AdminProjectsDemo.Extensions;
 using AdminProjectsDemo.Services.Executors;
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,11 +16,13 @@ namespace AdminProjectsDemo.Controllers
     {
         private readonly IExecutorHandler _executorHandler;
         private readonly IConfiguration _configuration;
+        private readonly IMapper _mapper;
 
-        public ExecutorsController(IExecutorHandler executorHandler, IConfiguration configuration)
+        public ExecutorsController(IExecutorHandler executorHandler, IConfiguration configuration, IMapper mapper)
         {
-           this. _executorHandler = executorHandler;
-           this._configuration = configuration;
+            this._executorHandler = executorHandler;
+            this._configuration = configuration;
+            this._mapper = mapper;
         }
 
         [HttpGet]
@@ -58,13 +62,14 @@ namespace AdminProjectsDemo.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<int>> Create([FromBody] Ejecutor executor)
+        public async Task<ActionResult<int>> Create([FromBody] ExecutorCreationRequest executorCreationRequest)
         {
             try
             {
                 if(!ModelState.IsValid)
                     return BadRequest(ModelState);
 
+                var executor = this._mapper.Map<Ejecutor>(executorCreationRequest);
                 var rowsAffected = await this._executorHandler.CreateAsync(executor);
 
                 return rowsAffected > 0 
@@ -78,16 +83,17 @@ namespace AdminProjectsDemo.Controllers
         }
 
         [HttpPut("{executorId:int}")]
-        public async Task<IActionResult> Update([FromRoute] int executorId, [FromBody] Ejecutor executor)
+        public async Task<IActionResult> Update([FromRoute] int executorId, [FromBody] ExecutorUpdateRequest executorUpdateRequest)
         {
             try
             {
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
 
-                if (executorId != executor.EjecutorID)
+                if (executorId != executorUpdateRequest.EjecutorID)
                     throw new ArgumentException("executorId doesn't match with the executorId of URL");
 
+                var executor = this._mapper.Map<Ejecutor>(executorUpdateRequest);
                 await this._executorHandler.UpdateAsync(executor);
 
                 return NoContent();
