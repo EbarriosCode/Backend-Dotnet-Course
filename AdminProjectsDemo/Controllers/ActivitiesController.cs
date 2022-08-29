@@ -1,6 +1,8 @@
-﻿using AdminProjectsDemo.Entitites;
+﻿using AdminProjectsDemo.DTOs.Activities.Request;
+using AdminProjectsDemo.Entitites;
 using AdminProjectsDemo.Extensions;
 using AdminProjectsDemo.Services.Activities;
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,21 +11,22 @@ namespace AdminProjectsDemo.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class ActivitiesController : ControllerBase
     {
         private readonly IActivityHandler _activityHandler;
         private readonly IConfiguration _configuration;
+        private readonly IMapper _mapper;
 
-        public ActivitiesController(IActivityHandler activityHandler, IConfiguration configuration)
+        public ActivitiesController(IActivityHandler activityHandler, IConfiguration configuration, IMapper mapper)
         {
-           this. _activityHandler = activityHandler;
-           this._configuration = configuration;
+            this. _activityHandler = activityHandler;
+            this._configuration = configuration;
+            this._mapper = mapper;
         }
 
         
         [HttpGet]
-        [AllowAnonymous]
         public async Task<ActionResult<Actividad[]>> Get()
         {
             try
@@ -60,12 +63,14 @@ namespace AdminProjectsDemo.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<int>> Create([FromBody] Actividad activity)
+        public async Task<ActionResult<int>> Create([FromBody] ActivityCreationRequest activityCreationRequest)
         {
             try
             {
                 if(!ModelState.IsValid)
                     return BadRequest(ModelState);
+
+                var activity = this._mapper.Map<Actividad>(activityCreationRequest);
 
                 var activityCreated = await this._activityHandler.CreateAsync(activity);
 
@@ -80,16 +85,17 @@ namespace AdminProjectsDemo.Controllers
         }
 
         [HttpPut("{activityId:int}")]
-        public async Task<IActionResult> Update([FromRoute] int activityId, [FromBody] Actividad activity)
+        public async Task<IActionResult> Update([FromRoute] int activityId, [FromBody] ActivityUpdateRequest activityUpdateRequest)
         {
             try
             {
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
 
-                if (activityId != activity.ActividadID)
+                if (activityId != activityUpdateRequest.ActividadID)
                     throw new ArgumentException("activityId doesn't match with the activityId of URL");
 
+                var activity = this._mapper.Map<Actividad>(activityUpdateRequest);
                 await this._activityHandler.UpdateAsync(activity);
 
                 return NoContent();

@@ -1,4 +1,5 @@
-﻿using AdminProjectsDemo.DTOs.Projects.Request;
+﻿using AdminProjectsDemo.DTOs.Activities.Request;
+using AdminProjectsDemo.DTOs.Projects.Request;
 using AdminProjectsDemo.Entitites;
 using AutoMapper;
 
@@ -10,6 +11,9 @@ namespace AdminProjectsDemo.Mapper
         {
             CreateMap<ProjectCreationRequest, Proyecto>();
             CreateMap<ProjectUpdateRequest, Proyecto>();
+
+            CreateMap<ActivityCreationRequest, Actividad>();
+            CreateMap<ActivityUpdateRequest, Actividad>();
         }
     }
 }
