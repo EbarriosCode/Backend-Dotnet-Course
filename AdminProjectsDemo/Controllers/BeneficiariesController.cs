@@ -1,6 +1,8 @@
-﻿using AdminProjectsDemo.Entitites;
+﻿using AdminProjectsDemo.DTOs.Beneficiaries.Request;
+using AdminProjectsDemo.Entitites;
 using AdminProjectsDemo.Extensions;
 using AdminProjectsDemo.Services.Beneficiaries;
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,11 +16,13 @@ namespace AdminProjectsDemo.Controllers
     {
         private readonly IBeneficiaryHandler _beneficiaryHandler;
         private readonly IConfiguration _configuration;
+        private readonly IMapper _mapper;
 
-        public BeneficiariesController(IBeneficiaryHandler beneficiaryHandler, IConfiguration configuration)
+        public BeneficiariesController(IBeneficiaryHandler beneficiaryHandler, IConfiguration configuration, IMapper mapper)
         {
-           this. _beneficiaryHandler = beneficiaryHandler;
-           this._configuration = configuration;
+            this. _beneficiaryHandler = beneficiaryHandler;
+            this._configuration = configuration;
+            this._mapper = mapper;
         }
 
         [HttpGet]
@@ -58,13 +62,14 @@ namespace AdminProjectsDemo.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<int>> Create([FromBody] Beneficiario beneficiary)
+        public async Task<ActionResult<int>> Create([FromBody] BeneficiaryCreationRequest beneficiaryCreationRequest)
         {
             try
             {
                 if(!ModelState.IsValid)
                     return BadRequest(ModelState);
 
+                var beneficiary = this._mapper.Map<Beneficiario>(beneficiaryCreationRequest);
                 var rowsAffected = await this._beneficiaryHandler.CreateAsync(beneficiary);
 
                 return rowsAffected > 0 
@@ -78,16 +83,17 @@ namespace AdminProjectsDemo.Controllers
         }
 
         [HttpPut("{beneficiaryId:int}")]
-        public async Task<IActionResult> Update([FromRoute] int beneficiaryId, [FromBody] Beneficiario beneficiary)
+        public async Task<IActionResult> Update([FromRoute] int beneficiaryId, [FromBody] BeneficiaryUpdateRequest beneficiaryUpdateRequest)
         {
             try
             {
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
 
-                if (beneficiaryId != beneficiary.BeneficiarioID)
+                if (beneficiaryId != beneficiaryUpdateRequest.BeneficiarioID)
                     throw new ArgumentException("beneficiaryId doesn't match with the beneficiaryId of URL");
 
+                var beneficiary = this._mapper.Map<Beneficiario>(beneficiaryUpdateRequest);
                 await this._beneficiaryHandler.UpdateAsync(beneficiary);
 
                 return NoContent();
