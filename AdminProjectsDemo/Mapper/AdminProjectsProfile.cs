@@ -2,6 +2,7 @@
 using AdminProjectsDemo.DTOs.Beneficiaries.Request;
 using AdminProjectsDemo.DTOs.Executors.Request;
 using AdminProjectsDemo.DTOs.Projects.Request;
+using AdminProjectsDemo.DTOs.ProjectsBeneficiaries.Request;
 using AdminProjectsDemo.Entitites;
 using AutoMapper;
 
@@ -19,6 +20,7 @@ namespace AdminProjectsDemo.Mapper
             CreateMap<BeneficiaryUpdateRequest, Beneficiario>();
             CreateMap<ExecutorCreationRequest, Ejecutor>();
             CreateMap<ExecutorUpdateRequest, Ejecutor>();
+            CreateMap<ProjectBeneficiaryCreationRequest, ProyectoBeneficiario>();
         }
     }
 }

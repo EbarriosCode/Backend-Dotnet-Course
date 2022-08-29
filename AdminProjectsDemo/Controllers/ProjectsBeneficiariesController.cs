@@ -1,7 +1,8 @@
-﻿using AdminProjectsDemo.Entitites;
+﻿using AdminProjectsDemo.DTOs.ProjectsBeneficiaries.Request;
+using AdminProjectsDemo.Entitites;
 using AdminProjectsDemo.Extensions;
 using AdminProjectsDemo.Services.ProjectBeneficiary;
-using AdminProjectsDemo.Services.ProjectExecutor;
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -15,11 +16,13 @@ namespace AdminProjectsDemo.Controllers
     {
         private readonly IProjectBeneficiaryHandler _projectBeneficiaryHandler;
         private readonly IConfiguration _configuration;
+        private readonly IMapper _mapper;
 
-        public ProjectsBeneficiariesController(IProjectBeneficiaryHandler projectBeneficiaryHandler, IConfiguration configuration)
+        public ProjectsBeneficiariesController(IProjectBeneficiaryHandler projectBeneficiaryHandler, IConfiguration configuration, IMapper mapper)
         {
-           this. _projectBeneficiaryHandler = projectBeneficiaryHandler;
-           this._configuration = configuration;
+            this._projectBeneficiaryHandler = projectBeneficiaryHandler;
+            this._configuration = configuration;
+            this._mapper = mapper;
         }
 
         [HttpGet]
@@ -59,13 +62,14 @@ namespace AdminProjectsDemo.Controllers
         }       
 
         [HttpPost]
-        public async Task<ActionResult<int>> Create([FromBody] ProyectoBeneficiario projectBeneficiary)
+        public async Task<ActionResult<int>> Create([FromBody] ProjectBeneficiaryCreationRequest projectBeneficiaryCreationRequest)
         {
             try
             {
                 if(!ModelState.IsValid)
                     return BadRequest(ModelState);
 
+                var projectBeneficiary = this._mapper.Map<ProyectoBeneficiario>(projectBeneficiaryCreationRequest);
                 var rowsAffected = await this._projectBeneficiaryHandler.CreateAsync(projectBeneficiary);
 
                 return rowsAffected > 0 

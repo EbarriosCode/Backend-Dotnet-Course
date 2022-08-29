@@ -23,6 +23,7 @@
   <ItemGroup>
     <Folder Include="DTOs\Beneficiaries\Response\" />
     <Folder Include="DTOs\Executors\Response\" />
+    <Folder Include="DTOs\ProjectsBeneficiaries\Response\" />
     <Folder Include="DTOs\Projects\Response\" />
     <Folder Include="DTOs\Roles\Response\" />
   </ItemGroup>
