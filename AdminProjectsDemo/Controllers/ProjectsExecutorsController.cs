@@ -1,6 +1,8 @@
-﻿using AdminProjectsDemo.Entitites;
+﻿using AdminProjectsDemo.DTOs.ProjectsExecutors.Request;
+using AdminProjectsDemo.Entitites;
 using AdminProjectsDemo.Extensions;
 using AdminProjectsDemo.Services.ProjectExecutor;
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,11 +16,13 @@ namespace AdminProjectsDemo.Controllers
     {
         private readonly IProjectExecutorHandler _projectExecutorHandler;
         private readonly IConfiguration _configuration;
+        private readonly IMapper _mapper;
 
-        public ProjectsExecutorsController(IProjectExecutorHandler projectExecutorHandler, IConfiguration configuration)
+        public ProjectsExecutorsController(IProjectExecutorHandler projectExecutorHandler, IConfiguration configuration, IMapper mapper)
         {
-           this. _projectExecutorHandler = projectExecutorHandler;
-           this._configuration = configuration;
+            this._projectExecutorHandler = projectExecutorHandler;
+            this._configuration = configuration;
+            this._mapper = mapper;
         }
 
         [HttpGet]
@@ -58,13 +62,14 @@ namespace AdminProjectsDemo.Controllers
         }       
 
         [HttpPost]
-        public async Task<ActionResult<int>> Create([FromBody] ProyectoEjecutor projectExecutor)
+        public async Task<ActionResult<int>> Create([FromBody] ProjectExecutorCreationRequest projectExecutorCreationRequest)
         {
             try
             {
                 if(!ModelState.IsValid)
                     return BadRequest(ModelState);
 
+                var projectExecutor = this._mapper.Map<ProyectoEjecutor>(projectExecutorCreationRequest);
                 var rowsAffected = await this._projectExecutorHandler.CreateAsync(projectExecutor);
 
                 return rowsAffected > 0 
