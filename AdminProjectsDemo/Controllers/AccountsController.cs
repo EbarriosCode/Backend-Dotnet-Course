@@ -19,12 +19,11 @@ namespace AdminProjectsDemo.Controllers
     public class AccountsController : ControllerBase
     {
         private readonly UserManager<IdentityUser> _userManager;
-        private readonly SignInManager<IdentityUser> _signInManager;        
+        private readonly SignInManager<IdentityUser> _signInManager;
         private readonly IConfiguration _configuration;
 
         public AccountsController(UserManager<IdentityUser> userManager,
                                   SignInManager<IdentityUser> signInManager,
-                                  RoleManager<IdentityRole> roleManager,
                                   IConfiguration configuration)
         {
             this._userManager = userManager;
