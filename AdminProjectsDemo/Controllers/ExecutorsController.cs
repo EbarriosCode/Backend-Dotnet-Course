@@ -11,7 +11,7 @@ namespace AdminProjectsDemo.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class ExecutorsController : ControllerBase
     {
         private readonly IExecutorHandler _executorHandler;
@@ -30,7 +30,7 @@ namespace AdminProjectsDemo.Controllers
         {
             try
             {
-                var executors = await this._executorHandler.GetAsync();
+                var executors = await this._executorHandler.GetAsync(null, string.Empty);
 
                 return Ok(executors);
             }
@@ -112,7 +112,7 @@ namespace AdminProjectsDemo.Controllers
                 if (executorId <= 0)
                     throw new ArgumentException("Invalid ExecutorId");
 
-                var existExecutor = await this._executorHandler.ExistRecordAsync(executorId);
+                var existExecutor = await this._executorHandler.ExistRecordAsync(x => x.EjecutorID == executorId);
 
                 if (!existExecutor)
                     return NotFound();

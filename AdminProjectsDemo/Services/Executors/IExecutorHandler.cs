@@ -1,14 +1,9 @@
 ﻿using AdminProjectsDemo.Entitites;
+using AdminProjectsDemo.Services.Base;
 
 namespace AdminProjectsDemo.Services.Executors
 {
-    public interface IExecutorHandler
+    public interface IExecutorHandler : IBaseService<Ejecutor>
     {
-        Task<Ejecutor[]> GetAsync();
-        Task<Ejecutor> GetByIdAsync(int executorId);
-        Task<int> CreateAsync(Ejecutor executor);
-        Task UpdateAsync(Ejecutor executor);
-        Task<bool> DeleteAsync(int executorId);
-        Task<bool> ExistRecordAsync(int executorId);
     }
 }

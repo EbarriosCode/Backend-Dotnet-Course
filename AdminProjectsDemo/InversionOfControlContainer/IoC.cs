@@ -10,7 +10,7 @@ namespace AdminProjectsDemo.InversionOfControlContainer
     public static class IoC
     {
         public static IServiceCollection AddDependency(this IServiceCollection services)
-        {
+        {            
             services.AddTransient<IProjectHandler, ProjectHandler>();
             services.AddTransient<IActivityHandler, ActivityHandler>();
             services.AddTransient<IExecutorHandler, ExecutorHandler>();
