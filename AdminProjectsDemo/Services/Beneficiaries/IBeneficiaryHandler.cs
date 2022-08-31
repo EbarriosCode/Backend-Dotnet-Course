@@ -1,14 +1,9 @@
 ﻿using AdminProjectsDemo.Entitites;
+using AdminProjectsDemo.Services.Base;
 
 namespace AdminProjectsDemo.Services.Beneficiaries
 {
-    public interface IBeneficiaryHandler 
+    public interface IBeneficiaryHandler : IBaseService<Beneficiario>
     {
-        Task<Beneficiario[]> GetAsync();
-        Task<Beneficiario> GetByIdAsync(int beneficiaryId);
-        Task<int> CreateAsync(Beneficiario beneficiary);
-        Task UpdateAsync(Beneficiario beneficiary);
-        Task<bool> DeleteAsync(int beneficiaryId);
-        Task<bool> ExistRecordAsync(int beneficiaryId);
     }
 }

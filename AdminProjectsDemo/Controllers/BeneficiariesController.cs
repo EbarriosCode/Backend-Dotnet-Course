@@ -11,7 +11,7 @@ namespace AdminProjectsDemo.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class BeneficiariesController : ControllerBase
     {
         private readonly IBeneficiaryHandler _beneficiaryHandler;
@@ -30,7 +30,7 @@ namespace AdminProjectsDemo.Controllers
         {
             try
             {
-                var beneficiaries = await this._beneficiaryHandler.GetAsync();
+                var beneficiaries = await this._beneficiaryHandler.GetAsync(null, string.Empty);
 
                 return Ok(beneficiaries);
             }
@@ -112,7 +112,7 @@ namespace AdminProjectsDemo.Controllers
                 if (beneficiaryId <= 0)
                     throw new ArgumentException("Invalid BeneficiaryId");
 
-                var existBeneficiary = await this._beneficiaryHandler.ExistRecordAsync(beneficiaryId);
+                var existBeneficiary = await this._beneficiaryHandler.ExistRecordAsync(x => x.BeneficiarioID == beneficiaryId);
 
                 if (!existBeneficiary)
                     return NotFound();
