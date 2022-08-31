@@ -31,7 +31,7 @@ namespace AdminProjectsDemo.Controllers
         {
             try
             {
-                var activities = await this._activityHandler.GetAsync();
+                var activities = await this._activityHandler.GetAsync(null, string.Empty);
 
                 return Ok(activities);
             }
@@ -114,7 +114,7 @@ namespace AdminProjectsDemo.Controllers
                 if (activityId <= 0)
                     throw new ArgumentException("Invalid ActivityId");
 
-                var existActivity = await this._activityHandler.ExistRecordAsync(activityId);
+                var existActivity = await this._activityHandler.ExistRecordAsync(x =>x.ActividadID == activityId);
 
                 if (!existActivity)
                     return NotFound();
