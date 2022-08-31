@@ -11,7 +11,7 @@ namespace AdminProjectsDemo.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class ExecutorsController : ControllerBase
     {
         private readonly IExecutorHandler _executorHandler;

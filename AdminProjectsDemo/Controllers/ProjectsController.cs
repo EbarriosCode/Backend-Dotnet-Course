@@ -30,7 +30,7 @@ namespace AdminProjectsDemo.Controllers
         {
             try
             {
-                var projects = await this._projectHandler.GetAsync();
+                var projects = await this._projectHandler.GetAsync(null, "Actividades");
 
                 return Ok(projects);
             }
@@ -114,7 +114,7 @@ namespace AdminProjectsDemo.Controllers
                 if (projectId <= 0)
                     throw new ArgumentException("Invalid ProjectId");
 
-                var existProject = await this._projectHandler.ExistRecordAsync(projectId);
+                var existProject = await this._projectHandler.ExistRecordAsync(x => x.ProyectoID == projectId);
 
                 if (!existProject)
                     return NotFound();

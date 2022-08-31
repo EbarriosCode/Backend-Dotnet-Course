@@ -1,14 +1,9 @@
 ﻿using AdminProjectsDemo.Entitites;
+using AdminProjectsDemo.Services.Base;
 
 namespace AdminProjectsDemo.Services.Projects
 {
-    public interface IProjectHandler
+    public interface IProjectHandler : IBaseService<Proyecto>
     {
-        Task<Proyecto[]> GetAsync();
-        Task<Proyecto> GetByIdAsync(int projectId);
-        Task<int> CreateAsync(Proyecto project);
-        Task UpdateAsync(Proyecto project);
-        Task<bool> DeleteAsync(int projectId);
-        Task<bool> ExistRecordAsync(int projectId);
     }
 }
